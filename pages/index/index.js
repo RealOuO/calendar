@@ -68,11 +68,16 @@ Page({
     })
     var rows = result.rows
     rows.shift()
-    var keyMonth = util.getYearMonth()
+    var schedule = [];
+    for(var ele of rows){
+      schedule.push(util.objToArry(ele));
+    }
+
+   var keyMonth = util.getYearMonth()
     wx.setStorage({
       key:keyMonth,
-      data: rows});
-    console.log(rows)
+      data: schedule});
+    console.log(schedule)
   },
   bindFormSubmit: function (e) {
     console.log(e.detail.value.textarea)

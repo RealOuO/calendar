@@ -84,7 +84,6 @@ Page({
   data: {
     title: 'Index page',
     userInfo: {},
-    members: wx.getStorageSync('201809') || [],
     showText: '我的排班',
     // 51日历api
     vacationUrl: 'http://cfg.51wnl.com/api/getconfigbyparajson.aspx?appid=ios-wnl-free&appver=2&configkey=Vocation_ZH_CN&lastupdate=',
@@ -102,6 +101,13 @@ Page({
       }
     };
     wx.request(obj);
+  },
+  
+  getSchedule: function getSchedule(year, month){
+    var month = year + '' + month;
+    var members = wx.getStorageSync(month) || [];
+    console.log(members);
+    return members;
   },
 
   // 设置顶部时间
@@ -137,6 +143,7 @@ Page({
         curStatus: true
       });
     }
+    pageData.members = this.getSchedule(curYear,curMonth+1);
 
     // 获取当月偏移
     var offset = getOffset(curYear, curMonth);
@@ -185,7 +192,8 @@ Page({
     refreshDetailData(pageData, offset + day - 1);
     this.setData({
       dateData: pageData.dateData,
-      detailData: pageData.detailData
+      detailData: pageData.detailData,
+      members:pageData.members
     });
   },
 
@@ -214,6 +222,7 @@ Page({
       });
     }
 
+    pageData2.members = this.getSchedule(curYear,curMonth+1);
     // 获取当月偏移
     var offset = getOffset(curYear, curMonth);
     // console.log('当月偏移'+offset)
@@ -261,7 +270,8 @@ Page({
     refreshDetailData(pageData2, offset + day - 1);
     this.setData({
       dateData2: pageData2.dateData,
-      detailData2: pageData2.detailData
+      detailData2: pageData2.detailData,
+      members:pageData2.members
     });
   },
 

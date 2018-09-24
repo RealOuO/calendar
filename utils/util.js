@@ -29,8 +29,14 @@ function objToStrMap(obj) {
   return strMap;
 }
 
+function objToArry(obj){
+  var arr = Object.values(obj); //对象转化为数组
+  return arr;
+}
+
 module.exports = {
   formatTime: formatTime,
   getYearMonth:getYearMonth,
-  objToStrMap: objToStrMap
+  objToStrMap: objToStrMap,
+  objToArry: objToArry
 }
