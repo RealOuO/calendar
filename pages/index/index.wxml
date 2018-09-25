@@ -7,10 +7,30 @@
       <text class="userinfo-nickname">{{userInfo.nickName}}</text>
     </block>
   </view>
-  <view class="usermotto">
-    <text class="user-motto">{{motto}}</text>
-  </view>
+
   <view class="section">
-      <textarea bindblur="bindTextAreaBlur" maxlength='-1'  placeholder="粘贴csv文本内容" name="textarea"/>
+    <view >
+      <view class="weui_cell_hd">
+        <view wx:if="{{hasData == 1}}">
+          <image src="../../images/find.png"> </image>
+        </view>
+        <view wx:else>
+          <image src="../../images/miss.png"></image>
+        </view>
+      </view>
+      <view class="weui_cell_bd">
+          <text class="userinfo-nickname">{{text}}</text>
+        </view>
+    </view>
+
+    <picker mode="date" value="{{date}}" fields="month" start="2018-09-01" end="2025-09-01" bindchange="bindDateChange">
+      <view class="picker">
+        班表月份: {{date}}
+      </view>
+
+    </picker>
+    <textarea bindconfirm="bindconfirm" maxlength='-1' placeholder="粘贴csv文本内容" class="textarea" value='{{content}}'/>
   </view>
+  <!-- <button type="primary" bindtap="listenerStorageClear">重置本月数据</button> -->
+
 </view>

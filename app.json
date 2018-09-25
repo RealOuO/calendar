@@ -7,11 +7,15 @@
     "list": [
       {
         "pagePath": "pages/calendar/calendar",
-        "text": "班表"
+        "text": "班表",
+        "iconPath":"images/calendar_h.png",
+        "selectedIconPath": "images/calendar.png"
       },
       {
         "pagePath": "pages/index/index",
-        "text": "我的"
+        "text": "我的",
+        "iconPath":"images/monkey_h.png",
+        "selectedIconPath": "images/monkey.png"
       }
     ]
   },

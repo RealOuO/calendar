@@ -46,9 +46,26 @@
                 <!--{{}}-->
               </view>
               <!--国假调休-->
-              <view wx:if="{{ dateData.arrInfoEx[row * 7 + col].workRestDay }}" class="work-rest">
+              <!-- <view wx:if="{{ dateData.arrInfoEx[row * 7 + col].workRestDay }}" class="work-rest"> -->
                 <!--{{ dateData.arrInfoEx[row * 7 + col].workRestDay == 1 ? '休息' : '上班' }}-->
-                <image class="tx-img" src="{{ dateData.arrInfoEx[row * 7 + col].workRestDay == 1 ? '../../images/x.png' : '../../images/b.png' }}"></image>
+                <!-- <image class="tx-img" src="{{ dateData.arrInfoEx[row * 7 + col].workRestDay == 1 ? '../../images/x.png' : '../../images/b.png' }}"></image> -->
+              <!-- </view> -->
+              <!--班表信息-->
+              <view class="work-rest" wx:if="{{ main.length!=0 }}">
+                <view wx:if="{{main[dateData.arrDays[row * 7 + col]] == '早'}}">
+                  <image src="../../images/sun.png" class="tx-img"></image>
+                </view>
+                <view wx:elif="{{main[dateData.arrDays[row * 7 + col]] == '晚'}}">
+                  <image src="../../images/night.png" class="tx-img"></image>
+                </view>
+                <view wx:elif="{{main[dateData.arrDays[row * 7 + col]] == '休'}}">
+                  <image src="../../images/home.png" class="tx-img"></image>
+                </view>
+                <view wx:elif="{{main[dateData.arrDays[row * 7 + col]] == '直'}}">
+                  <image src="../../images/12.png" class="tx-img"></image>
+                </view>
+                <view wx:else> <image src="../../images/unknown.png" class="tx-img"></image>
+                 </view>
               </view>
               <!--<view class="calendar-body-workturn" style="color:{{workTurnData.arrWorkTurn[row * 7 + col] === '休' ? '#09BB07' : '#e64340'}}" hidden="{{!isWorkTurn}}">
                                 {{workTurnData.arrWorkTurn[row * 7 + col]}}
@@ -76,9 +93,26 @@
                 <!--{{}}-->
               </view>
               <!--国假调休-->
-              <view wx:if="{{ dateData2.arrInfoEx[row * 7 + col].workRestDay }}" class="work-rest">
+              <!-- <view wx:if="{{ dateData2.arrInfoEx[row * 7 + col].workRestDay }}" class="work-rest"> -->
                 <!--{{ dateData2.arrInfoEx[row * 7 + col].workRestDay == 1 ? '休息' : '上班' }}-->
-                <image class="tx-img" src="{{ dateData2.arrInfoEx[row * 7 + col].workRestDay == 1 ? '../../images/x.png' : '../../images/b.png' }}"></image>
+                <!-- <image class="tx-img" src="{{ dateData2.arrInfoEx[row * 7 + col].workRestDay == 1 ? '../../images/x.png' : '../../images/b.png' }}"></image> -->
+              <!-- </view> -->
+              <!--班表信息-->
+              <view class="work-rest" wx:if="{{ main2.length!=0 }}">
+                <view wx:if="{{main2[dateData.arrDays[row * 7 + col]] == '早'}}">
+                  <image src="../../images/sun.png" class="tx-img"></image>
+                </view>
+                <view wx:elif="{{main2[dateData.arrDays[row * 7 + col]] == '晚'}}">
+                  <image src="../../images/night.png" class="tx-img"></image>
+                </view>
+                <view wx:elif="{{main2[dateData.arrDays[row * 7 + col]] == '休'}}">
+                  <image src="../../images/home.png" class="tx-img"></image>
+                </view>
+                <view wx:elif="{{main2[dateData.arrDays[row * 7 + col]] == '直'}}">
+                  <image src="../../images/12.png" class="tx-img"></image>
+                </view>
+                <view wx:else> <image src="../../images/unknown.png" class="tx-img"></image>
+                 </view>
               </view>
               <!--<view class="calendar-body-workturn" style="color:{{workTurnData.arrWorkTurn[row * 7 + col] === '休' ? '#09BB07' : '#e64340'}}" hidden="{{!isWorkTurn}}">
                                 {{workTurnData.arrWorkTurn[row * 7 + col]}}
@@ -112,7 +146,8 @@
           <view wx:elif="{{member[detailData.curDay] == '直'}}">
             <image src="../../images/12.png"></image>
           </view>
-          <view wx:else> <image src="../../images/unknown.png"></image> </view>
+          <view wx:else> <image src="../../images/unknown.png"></image>
+           </view>
         </view>
         <view class="weui_cell_bd">
           <view class="weui_cell_bd_p"> {{member[0]}} </view>
@@ -120,7 +155,7 @@
       </view>
     </block>
   </view>
-  <view class="show-bottom">
+  <view class="show-bottom" wx:if="{{members.length==0}}">
     <view class="show-bottom-wrap">
       <view class="show">
         {{ showText }}

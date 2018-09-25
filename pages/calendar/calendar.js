@@ -26,7 +26,8 @@ var pageData = {
     curDay: '',
     curInfo1: '',
     curInfo2: ''
-  }
+  },
+  main:[]
 };
 var pageData2 = {
   dateData: {
@@ -42,9 +43,10 @@ var pageData2 = {
     curDay: '',
     curInfo1: '',
     curInfo2: ''
-  }
-  //月份天数表
+  },
+  main:[]
 }; 
+//月份天数表
 var DAY_OF_MONTH = [[31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31], [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]];
 var DAY_ENGLISH = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 var MONTH_ENGLISH = ['January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -84,7 +86,7 @@ Page({
   data: {
     title: 'Index page',
     userInfo: {},
-    showText: '我的排班',
+    showText: '暂无排班信息',
     // 51日历api
     vacationUrl: 'http://cfg.51wnl.com/api/getconfigbyparajson.aspx?appid=ios-wnl-free&appver=2&configkey=Vocation_ZH_CN&lastupdate=',
     festivalUrl: 'http://cfg.51wnl.com/api/getconfigbyparajson.aspx?appid=ios-wnl-free&appver=2&configkey=Festival_ZH_CN&lastupdate='
@@ -104,9 +106,10 @@ Page({
   },
   
   getSchedule: function getSchedule(year, month){
-    var month = year + '' + month;
-    var members = wx.getStorageSync(month) || [];
-    console.log(members);
+    var smonth = (month < 10 ? "0" + month : month); 
+    smonth = year + '-' + smonth;
+    var members = wx.getStorageSync(smonth) || [];
+    
     return members;
   },
 
@@ -144,6 +147,12 @@ Page({
       });
     }
     pageData.members = this.getSchedule(curYear,curMonth+1);
+    pageData.main = [];
+    for(var member of pageData2.members){
+      if(member[0]=='方晓丹'){
+        pageData.main = member;
+      }
+    }
 
     // 获取当月偏移
     var offset = getOffset(curYear, curMonth);
@@ -193,7 +202,8 @@ Page({
     this.setData({
       dateData: pageData.dateData,
       detailData: pageData.detailData,
-      members:pageData.members
+      members:pageData.members,
+      main:pageData.main
     });
   },
 
@@ -223,6 +233,12 @@ Page({
     }
 
     pageData2.members = this.getSchedule(curYear,curMonth+1);
+    pageData2.main = [];
+    for(var member of pageData2.members){
+      if(member[0]=='方晓丹'){
+        pageData2.main = member;
+      }
+    }
     // 获取当月偏移
     var offset = getOffset(curYear, curMonth);
     // console.log('当月偏移'+offset)
@@ -270,44 +286,25 @@ Page({
     refreshDetailData(pageData2, offset + day - 1);
     this.setData({
       dateData2: pageData2.dateData,
-      detailData2: pageData2.detailData,
-      members:pageData2.members
+      detailData: pageData2.detailData,
+      members:pageData2.members,
+      main2:pageData2.main
     });
   },
 
-  // 上个月
   goLastMonth: function goLastMonth() {
-    var curMonth = curMonth + 1;
     if (0 == curMonth) {
       curMonth = 11;
       --curYear;
     } else {
       --curMonth;
     }
-    // console.log(curYear)
-    // console.log(curMonth)
-    this.initCurDate(curYear, curMonth, 1);
-    this.setData({
-      dateData: pageData.dateData,
-      detailData: pageData.detailData
-    });
-  },
-  goLastMonth2: function goLastMonth2() {
-    if (0 == curMonth) {
-      curMonth = 11;
-      --curYear;
-    } else {
-      --curMonth;
-    }
-    // console.log(curYear)
-    // console.log(curMonth)
     this.initCurDate2(curYear, curMonth, 1);
     this.setData({
       dateData2: pageData2.dateData,
       detailData: pageData2.detailData
     });
   },
-  // 下个月
   goNextMonth: function goNextMonth() {
     if (11 == curMonth) {
       curMonth = 0;
@@ -315,27 +312,8 @@ Page({
     } else {
       ++curMonth;
     }
-    // console.log(curYear)
-    // console.log(curMonth)
-    // chooseDay = || 1;
-    this.initCurDate(curYear, curMonth, 1);
-    this.setData({
-      dateData: pageData.dateData,
-      detailData: pageData.detailData
-    });
-  },
-  goNextMonth2: function goNextMonth2() {
-    if (11 == curMonth) {
-      curMonth = 0;
-      ++curYear;
-    } else {
-      ++curMonth;
-    }
-    // console.log(curYear)
-    // console.log(curMonth)
     // chooseDay = || 1;
     this.initCurDate2(curYear, curMonth, 1);
-    console.log(pageData2);
     this.setData({
       dateData2: pageData2.dateData,
       detailData: pageData2.detailData
@@ -359,7 +337,8 @@ Page({
         // that.goLastMonth()
         that.setData({
           dateData: that.data.dateData2,
-          detailData: pageData2.detailData
+          detailData: pageData2.detailData,
+          main:that.data.main2
         });
       }, 600);
       setTimeout(function () {
@@ -381,7 +360,8 @@ Page({
         // that.goLastMonth()
         that.setData({
           dateData: that.data.dateData2,
-          detailData: pageData2.detailData
+          detailData: pageData2.detailData,
+          main:that.data.main2
         });
       }, 600);
       setTimeout(function () {
@@ -402,57 +382,18 @@ Page({
       });
     }
   },
-  // 选择picker日期
-  bindDateChange: function bindDateChange(e) {
-    var arr = e.detail.value.split("-");
-    curYear = +arr[0];
-    curMonth = arr[1] - 1;
-    curDay = +arr[2];
-    // this.initCurDate(+arr[0], arr[1]-1, +arr[2]);
-    this.initCurDate(curYear, curMonth, curDay);
-    this.setData({
-      dateData: pageData.dateData,
-      detailData: pageData.detailData
-    });
-  },
   // 选择日期
   selectDay: function selectDay(e) {
     // var that = this
     refreshDetailData(pageData, e.currentTarget.dataset.dayIndex);
     if (e.currentTarget.dataset.dayIndex < 10 && !e.currentTarget.dataset.dayFalse) {
-      // this.goLastMonth()
-      // this.goLastMonthAnimate()
+
       this.goNextMonthAnimate();
-      // that.setData({
-      //   one_one: 'animated fadeOutRight',
-      //   two_two: 'animated fadeInLeft'
-      // })
-      // setTimeout(function () {
-      //   that.goLastMonth()
-      // }, 300)
-      // setTimeout(function () {
-      //   that.setData({
-      //     one_one: '',
-      //     two_two: ''
-      //   })
-      // }, 1000)
+
     } else if (e.currentTarget.dataset.dayIndex > 11 && !e.currentTarget.dataset.dayFalse) {
-      // this.goNextMonth()
 
       this.goLastMonthAnimate();
-      // that.setData({
-      //   one_one: 'animated fadeOutLeft',
-      //   two_two: 'animated fadeInRight'
-      // })
-      // setTimeout(function () {
-      //   that.goNextMonth()
-      // }, 300)
-      // setTimeout(function () {
-      //   that.setData({
-      //     one_one: '',
-      //     two_two: ''
-      //   })
-      // }, 1000)
+     
     }
     // this.initCurDate(curYear, curMonth, 1);
     this.setData({
@@ -477,40 +418,12 @@ Page({
     var distance = e.changedTouches[0].clientX - this.data.startX;
     if (distance < -100) {
       // left
-      // that.goNextMonth()
       that.goToLeft(that);
-      // that.setData({
-      //   one_one: 'animated fadeOutLeft',
-      //   two_two: 'animated fadeInRight'
-      // })
-      // setTimeout(function () {
-      //   that.goNextMonth()
-      // }, 300)
-      // setTimeout(function () {
-      //   that.setData({
-      //     touchStatus: false,
-      //     one_one: '',
-      //     two_two: ''
-      //   })
-      // }, 1000)
+     
     } else if (distance > 100) {
       // right
-      // that.goLastMonth()
       that.goToRight(that);
-      // that.setData({
-      //   one_one: 'animated fadeOutRight',
-      //   two_two: 'animated fadeInLeft'
-      // })
-      // setTimeout(function () {
-      //   that.goLastMonth()
-      // }, 300)
-      // setTimeout(function () {
-      //   that.setData({
-      //     touchStatus: false,
-      //     one_one: '',
-      //     two_two: ''
-      //   })
-      // }, 1000)
+      
     } else {
       this.setData({
         touchStatus: false
@@ -521,14 +434,15 @@ Page({
   // 动画效果
   // 向左侧滑动
   goToLeft: function goToLeft(that) {
-    that.goNextMonth2();
+    that.goNextMonth();
     that.setData({
       one_one: 'animated fadeOutLeft',
       two_two: 'animated fadeInRight'
     });
     setTimeout(function () {
       that.setData({
-        dateData: that.data.dateData2
+        dateData: that.data.dateData2,
+        main:that.data.main2
       });
     }, 600);
     setTimeout(function () {
@@ -542,7 +456,7 @@ Page({
     pageData = pageData2;
   },
   goToRight: function goToRight(that) {
-    that.goLastMonth2();
+    that.goLastMonth();
     that.setData({
       one_one: 'animated fadeOutRight',
       two_two: 'animated fadeInLeft'
@@ -550,7 +464,8 @@ Page({
     setTimeout(function () {
       // that.goLastMonth()
       that.setData({
-        dateData: that.data.dateData2
+        dateData: that.data.dateData2,
+        main:that.data.main2,
       });
     }, 600);
     setTimeout(function () {
@@ -620,7 +535,9 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function onShow() {
-    // console.log(' ---------- onShow ----------')
+    //  console.log(' ---------- onShow ----------')
+    this.initCurDate(curYear, curMonth, curDay);
+    this.initCurDate2(curYear, curMonth, curDay);
   },
 
   /**

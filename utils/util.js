@@ -18,7 +18,8 @@ function getYearMonth(){
   var date=new Date;
   var year=date.getFullYear(); 
   var month=date.getMonth()+1;
-  return (year.toString()+month.toString());
+  month = (month < 10 ? "0" + month : month); 
+  return (year.toString() + "-"+ month.toString());
 }
 
 function objToStrMap(obj) {
